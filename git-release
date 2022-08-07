@@ -116,7 +116,7 @@ def main():
     strNextRelease = getNextRelease(strLatestTag)
 
     string = "Give new Release [" + strNextRelease + "]: "
-    new_tag = (input(string) or strNextRelease)
+    new_tag = strNextRelease
     print("new release: " + new_tag)
 
     # https://git-flow.readthedocs.io/en/latest/releases.html
