@@ -15,8 +15,10 @@ blnDone = False
 sourceBranch = 'develop'
 targetBranch = 'master'
 
+RELEASE_TAG = re.compile(r"^v\d{1,4}\.\d{1,4}\.\d{1,4}$")
+
 def getNextRelease(strRelease):
-    x = re.findall("^(v\d{1,4}\.\d{1,4}\.)(\d{1,4})$", strRelease)
+    x = re.findall(r"^(v\d{1,4}\.\d{1,4}\.)(\d{1,4})$", strRelease)
     next = str(int(x[0][1]) + 1)
     return x[0][0] + next
 
@@ -105,7 +107,9 @@ def main():
         print(sourceBranch + ' branch has uncommitted files')
         exit(0)
 
-    tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
+    # Only vX.Y.Z tags are releases. Other tags (like archive/*) would crash getNextRelease().
+    tags = [t for t in repo.tags if RELEASE_TAG.match(t.name)]
+    tags = sorted(tags, key=lambda t: t.commit.committed_datetime)
 
     strLatestTag = "v0.0.0"
     if len(tags) > 0:
